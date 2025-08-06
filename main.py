@@ -5,7 +5,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import aiosqlite
 from datetime import datetime, timedelta
 import os
-from utils.parser import parse_human_time
 
 TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=TOKEN)
