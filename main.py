@@ -31,12 +31,11 @@ async def init_db():
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.answer("Привет! Я умный бот-напоминалка 🧠⏰", reply_markup=main_kb)
+    await message.answer("Привет! Я умный бот-напоминалка 🧠⏰\nДобавляй задачи или смотри список напоминаний.", reply_markup=main_kb)
 
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
-    await message.answer("Начнем напоминание в свободной форме 🙂")
-Например: 'каждый понедельник в 10:00 спортзал'")
+    await message.answer("Напиши напоминание в свободной форме 🙂\nНапример: 'каждый понедельник в 10:00 спортзал'")
 
 @dp.message(Command("list"))
 async def cmd_list(message: types.Message):
@@ -44,9 +43,9 @@ async def cmd_list(message: types.Message):
         async with db.execute("SELECT message, weekdays, time FROM reminders WHERE user_id = ?", (message.from_user.id,)) as cursor:
             rows = await cursor.fetchall()
             if rows:
-                response = "\n".join([f"{r[0]} — {r[1]} в {r[2]}" for r in rows])
+                response = "\n".join([f"🔔 {r[0]} — {r[1]} в {r[2]}" for r in rows])
             else:
-                response = "Нет активных напоминаний."
+                response = "У тебя пока нет активных напоминаний."
     await message.answer(response)
 
 @dp.message()
@@ -54,7 +53,7 @@ async def handle_text(message: types.Message):
     text = message.text
     parsed = parse_human_time(text)
     if not parsed:
-        await message.answer("Не удалось понять. Попробуй: 'каждую пятницу в 19:00 фильм'")
+        await message.answer("❗ Не удалось понять. Попробуй, например: 'каждую пятницу в 19:00 фильм'")
         return
     msg, days, time_str = parsed
     async with aiosqlite.connect("journal.db") as db:
@@ -65,7 +64,7 @@ async def handle_text(message: types.Message):
 
 async def send_reminders():
     while True:
-        now = datetime.utcnow() + timedelta(hours=3)
+        now = datetime.utcnow() + timedelta(hours=3)  # Московское время
         check_time = (now + timedelta(minutes=30)).strftime("%H:%M")
         weekday = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"][now.weekday()]
         async with aiosqlite.connect("journal.db") as db:
