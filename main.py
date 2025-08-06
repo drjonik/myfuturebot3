@@ -35,7 +35,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message(Command("add"))
 async def cmd_add(message: types.Message):
-    await message.answer("Напиши напоминание в свободной форме:
+    await message.answer("Начнем напоминание в свободной форме 🙂")
 Например: 'каждый понедельник в 10:00 спортзал'")
 
 @dp.message(Command("list"))
